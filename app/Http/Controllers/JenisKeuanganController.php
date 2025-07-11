@@ -12,28 +12,30 @@ class JenisKeuanganController extends Controller
     public function index()
     {
         $jenis = JenisKeuangan::orderBy('nama')->get();
-        return view('jenis_keuangan.index', compact('jenis'));
+        return view('admin.jeniskeuangan.index', compact('jenis'));
     }
 
     public function create()
     {
-        return view('jenis_keuangan.create');
+        return view('admin.jeniskeuangan.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'nama' => 'required|string|max:100|unique:jenis_keuangan,nama',
+            'deskripsi' => 'nullable|string|max:255',
         ]);
 
         try {
             DB::transaction(function () use ($request) {
                 JenisKeuangan::create([
                     'nama' => $request->nama,
+                    'deskripsi' => $request->deskripsi,
                 ]);
             });
 
-            return redirect()->route('jenis_keuangan.index')->with('success', 'Jenis keuangan berhasil ditambahkan.');
+            return redirect()->route('admin.jeniskeuangan.index')->with('success', 'Jenis keuangan berhasil ditambahkan.');
         } catch (\Exception $e) {
             Log::error('Gagal simpan jenis keuangan: ' . $e->getMessage());
             return back()->with('error', 'Terjadi kesalahan saat menyimpan data.');
@@ -44,9 +46,9 @@ class JenisKeuanganController extends Controller
     {
         try {
             $jenis = JenisKeuangan::findOrFail($id);
-            return view('jenis_keuangan.edit', compact('jenis'));
+            return view('admin.jeniskeuangan.edit', compact('jenis'));
         } catch (\Exception $e) {
-            return redirect()->route('jenis_keuangan.index')->with('error', 'Data tidak ditemukan.');
+            return redirect()->route('admin.jeniskeuangan.index')->with('error', 'Data tidak ditemukan.');
         }
     }
 
@@ -54,6 +56,7 @@ class JenisKeuanganController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:100|unique:jenis_keuangan,nama,' . $id,
+            'deskripsi' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -61,10 +64,11 @@ class JenisKeuanganController extends Controller
                 $jenis = JenisKeuangan::findOrFail($id);
                 $jenis->update([
                     'nama' => $request->nama,
+                    'deskripsi' => $request->deskripsi,
                 ]);
             });
 
-            return redirect()->route('jenis_keuangan.index')->with('success', 'Jenis keuangan berhasil diperbarui.');
+            return redirect()->route('admin.jeniskeuangan.index')->with('success', 'Jenis keuangan berhasil diperbarui.');
         } catch (\Exception $e) {
             Log::error('Gagal update jenis keuangan: ' . $e->getMessage());
             return back()->with('error', 'Terjadi kesalahan saat update.');
@@ -79,7 +83,7 @@ class JenisKeuanganController extends Controller
                 $jenis->delete();
             });
 
-            return redirect()->route('jenis_keuangan.index')->with('success', 'Jenis keuangan berhasil dihapus.');
+            return redirect()->route('admin.jeniskeuangan.index')->with('success', 'Jenis keuangan berhasil dihapus.');
         } catch (\Exception $e) {
             Log::error('Gagal hapus jenis keuangan: ' . $e->getMessage());
             return back()->with('error', 'Terjadi kesalahan saat menghapus data.');

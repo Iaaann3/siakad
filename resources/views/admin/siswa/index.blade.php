@@ -14,6 +14,19 @@
             </div>
         </div>
     </div>
+    @if (session('success'))
+        <div class="alert alert-light-success color-success alert-dismissible fade show mt-3" role="alert">
+            <i class="bi bi-check-circle"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-light-danger color-danger alert-dismissible fade show mt-3" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     @if ($errors->any())
   <div class="alert alert-danger">
     <ul>
@@ -38,6 +51,7 @@
                             <th>Kelas</th>
                             <th>Jenis Kelamin</th>
                             <th>No Telepon</th>
+                            <th>Alamat</th>
                             <th>Jurusan</th>
                             <th>Foto</th>
                             <th>Aksi</th>
@@ -52,6 +66,7 @@
                             <td>{{ $item->kelas->nomor_kelas ?? '-' }}</td>
                             <td>{{ $item->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
                             <td>{{ $item->no_telepon }}</td>
+                            <td>{{ $item->alamat }}</td>
                             <td>{{ $item->jurusan->nama_jurusan ?? '-' }}</td>
                             <td>
                                 @if($item->foto)

@@ -12,12 +12,12 @@ class SemesterController extends Controller
     public function index()
     {
         $semester = Semester::orderByDesc('tanggal_mulai')->get();
-        return view('semester.index', compact('semester'));
+        return view('admin.semester.index', compact('semester'));
     }
 
     public function create()
     {
-        return view('semester.create');
+        return view('admin.semester.create');
     }
 
     public function store(Request $request)
@@ -37,7 +37,7 @@ class SemesterController extends Controller
                 ]);
             });
 
-            return redirect()->route('semester.index')->with('success', 'Semester berhasil ditambahkan.');
+            return redirect()->route('admin.semester.index')->with('success', 'Semester berhasil ditambahkan.');
         } catch (\Exception $e) {
             Log::error('Gagal simpan semester: ' . $e->getMessage());
             return back()->with('error', 'Terjadi kesalahan saat menyimpan semester.');
@@ -48,9 +48,9 @@ class SemesterController extends Controller
     {
         try {
             $semester = Semester::findOrFail($id);
-            return view('semester.edit', compact('semester'));
+            return view('admin.semester.edit', compact('semester'));
         } catch (\Exception $e) {
-            return redirect()->route('semester.index')->with('error', 'Data semester tidak ditemukan.');
+            return redirect()->route('admin.semester.index')->with('error', 'Data semester tidak ditemukan.');
         }
     }
 
@@ -73,7 +73,7 @@ class SemesterController extends Controller
                 ]);
             });
 
-            return redirect()->route('semester.index')->with('success', 'Semester berhasil diperbarui.');
+            return redirect()->route('admin.semester.index')->with('success', 'Semester berhasil diperbarui.');
         } catch (\Exception $e) {
             Log::error('Gagal update semester: ' . $e->getMessage());
             return back()->with('error', 'Terjadi kesalahan saat memperbarui semester.');
@@ -88,7 +88,7 @@ class SemesterController extends Controller
                 $semester->delete();
             });
 
-            return redirect()->route('semester.index')->with('success', 'Semester berhasil dihapus.');
+            return redirect()->route('admin.semester.index')->with('success', 'Semester berhasil dihapus.');
         } catch (\Exception $e) {
             Log::error('Gagal hapus semester: ' . $e->getMessage());
             return back()->with('error', 'Terjadi kesalahan saat menghapus semester.');

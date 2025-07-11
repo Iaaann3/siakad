@@ -44,7 +44,7 @@ class MapelController extends Controller
     {
         try {
             $mapel = Mapel::findOrFail($id);
-            return view('mapel.edit', compact('mapel'));
+            return view('admin.mapel.edit', compact('mapel'));
         } catch (\Exception $e) {
             return redirect()->route('admin.mapel.index')->with('error', 'Data mapel tidak ditemukan.');
         }

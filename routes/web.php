@@ -13,6 +13,7 @@ use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\GuruDashboardController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -53,7 +54,7 @@ Route::group([
     Route::resource('siswa', SiswaController::class);
     Route::resource('mapel', MapelController::class);
     Route::resource('semester', SemesterController::class);
-    Route::resource('jenis-keuangan', JenisKeuanganController::class);
+    Route::resource('jeniskeuangan', JenisKeuanganController::class);
     Route::resource('penilaian', PenilaianController::class);
     Route::resource('absensi', AbsensiController::class);
     Route::resource('jadwal', JadwalController::class);
@@ -68,12 +69,13 @@ Route::group([
     'as'         => 'guru.',
     'middleware' => ['auth'],
 ], function () {
-    Route::get('/', fn() => view('guru.index'))->name('dashboard');
+    Route::get('/', [GuruDashboardController::class, 'index'])->name('dashboard');
     Route::resource('mapel', MapelController::class);
     Route::resource('penilaian', PenilaianController::class);
     Route::resource('absensi', AbsensiController::class);
     Route::resource('jadwal', JadwalController::class);
 });
+
 
 // =============================
 // SISWA ROUTES

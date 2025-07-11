@@ -28,7 +28,7 @@
         </div>
 
         <!-- Menu Sidebar -->
-        <div class="sidebar-menu flex-grow-1 overflow-auto">
+        <div class="sidebar-menu flex-grow-1">
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
 
@@ -41,43 +41,55 @@
 
                 <li class="sidebar-item {{ request()->routeIs('admin.mapel.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.mapel.index') }}" class='sidebar-link'>
-                        <i class="bi bi-grid-fill"></i>
+                        <i class="fas fa-book-open me-2"></i>
                         <span>Mapel</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item {{ request()->routeIs('admin.guru.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.guru.index') }}" class='sidebar-link'>
-                        <i class="bi bi-grid-fill"></i>
+                        <i class="fas fa-user-tie me-2"></i>
                         <span>Guru</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item {{ request()->routeIs('admin.jurusan.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.jurusan.index') }}" class='sidebar-link'>
-                        <i class="bi bi-grid-fill"></i>
+                       <i class="fas fa-chalkboard-teacher"></i>
                         <span>Jurusan</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item {{ request()->routeIs('admin.kelas.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.kelas.index') }}" class='sidebar-link'>
-                        <i class="bi bi-grid-fill"></i>
+                        <i class="fas fa-door-open me-2"></i>
                         <span>Kelas</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item {{ request()->routeIs('admin.siswa.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.siswa.index') }}" class='sidebar-link'>
-                        <i class="bi bi-grid-fill"></i>
+                       <i class="fas fa-child"></i>
                         <span>Siswa</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item {{ request()->routeIs('admin.jadwal.*') ? 'active' : '' }}">
                     <a href="{{ route('admin.jadwal.index') }}" class='sidebar-link'>
-                        <i class="bi bi-grid-fill"></i>
+                        <i class="fas fa-calendar-alt me-2"></i>
                         <span>Jadwal</span>
+                    </a>
+                </li>
+                 <li class="sidebar-item {{ request()->routeIs('admin.semester.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.semester.index') }}" class='sidebar-link'>
+                        <i class="fas fa-layer-group me-2"></i>
+                        <span>Semester</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {{ request()->routeIs('admin.jeniskeuangan.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.jeniskeuangan.index') }}" class='sidebar-link'>
+                        <i class="fas fa-wallet me-2"></i>
+                        <span>Jenis Keuangan</span>
                     </a>
                 </li>
             </ul>
