@@ -3,6 +3,8 @@
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\JadwalGuruController;
+use App\Http\Controllers\GuruDashboardController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\JenisKeuanganController;
 use App\Http\Controllers\JurusanController;
@@ -13,7 +15,6 @@ use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\GuruDashboardController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -73,9 +74,8 @@ Route::group([
     Route::resource('mapel', MapelController::class);
     Route::resource('penilaian', PenilaianController::class);
     Route::resource('absensi', AbsensiController::class);
-    Route::resource('jadwal', JadwalController::class);
+    Route::resource('jadwal', JadwalGuruController::class);
 });
-
 
 // =============================
 // SISWA ROUTES

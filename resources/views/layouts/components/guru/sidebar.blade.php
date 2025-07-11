@@ -54,7 +54,7 @@
               <span class="d-flex">
                 <i class="ti ti-shopping-cart"></i>
               </span>
-              <span class="hide-menu">Absensi</span>
+              <span class="hide-menu">Jadwal Saya</span>
             </div>
           </a>
         </li>
