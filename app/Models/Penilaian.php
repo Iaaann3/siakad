@@ -17,4 +17,8 @@ class Penilaian extends Model
     {
         return $this->belongsTo(Semester::class, 'id_semester');
     }
+    public function mapel()
+    {
+        return $this->belongsTo(Mapel::class, 'id_mapel');
+    }
 }

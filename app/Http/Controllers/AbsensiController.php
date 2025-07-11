@@ -11,15 +11,19 @@ use Illuminate\Support\Facades\Log;
 
 class AbsensiController extends Controller
 {
-    public function index()
-    {
-        $absensi = Absensi::with('siswa', 'jadwal')->orderByDesc('tanggal')->get();
-        return view('absensi.index', compact('absensi'));
-    }
+public function index()
+{
+    $absensi = Absensi::with('siswa', 'jadwal')->orderByDesc('tanggal')->get();
+    $siswaList = Siswa::with('kelas')->get(); 
+    $jadwalList = Jadwal::with('mapel', 'kelas')->get();
+
+    return view('guru.absensi.index', compact('absensi', 'siswaList', 'jadwalList'));
+}
+
 
     public function create()
     {
-        return view('absensi.create', [
+        return view('guru.absensi.create', [
             'siswa' => Siswa::all(),
             'jadwal' => Jadwal::all(),
         ]);
@@ -49,7 +53,7 @@ class AbsensiController extends Controller
                 Absensi::create($request->all());
             });
 
-            return redirect()->route('absensi.index')->with('success', 'Absensi berhasil disimpan.');
+            return redirect()->route('guru.absensi.index')->with('success', 'Absensi berhasil disimpan.');
         } catch (\Exception $e) {
             Log::error('Gagal menyimpan absensi: ' . $e->getMessage());
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -60,13 +64,13 @@ class AbsensiController extends Controller
     {
         try {
             $absen = Absensi::findOrFail($id);
-            return view('absensi.edit', [
+            return view('guru.absensi.edit', [
                 'absen' => $absen,
                 'siswa' => Siswa::all(),
                 'jadwal' => Jadwal::all(),
             ]);
         } catch (\Exception $e) {
-            return redirect()->route('absensi.index')->with('error', 'Data absensi tidak ditemukan.');
+            return redirect()->route('guru.absensi.index')->with('error', 'Data absensi tidak ditemukan.');
         }
     }
 
@@ -84,7 +88,7 @@ class AbsensiController extends Controller
                 ]);
             });
 
-            return redirect()->route('absensi.index')->with('success', 'Absensi berhasil diperbarui.');
+            return redirect()->route('guru.absensi.index')->with('success', 'Absensi berhasil diperbarui.');
         } catch (\Exception $e) {
             Log::error('Gagal update absensi: ' . $e->getMessage());
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -99,7 +103,7 @@ class AbsensiController extends Controller
                 $absen->delete();
             });
 
-            return redirect()->route('absensi.index')->with('success', 'Data absensi berhasil dihapus.');
+            return redirect()->route('guru.absensi.index')->with('success', 'Data absensi berhasil dihapus.');
         } catch (\Exception $e) {
             Log::error('Gagal hapus absensi: ' . $e->getMessage());
             return back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());

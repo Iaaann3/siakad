@@ -38,13 +38,13 @@ class Kernel extends HttpKernel
     ];
 
     /**
-     * Route middleware (dipanggil lewat nama di route).
+     * Route middleware 
      */
     protected $routeMiddleware = [
         'auth'       => \App\Http\Middleware\Authenticate::class,
         'guest'      => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'verified'   => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'role'       => \App\Http\Middleware\RoleMiddleware::class,       // <- kalau kamu pakai role
-        'is_admin'   => \App\Http\Middleware\IsAdmin::class,              // <- kalau kamu punya ini
+        'role'       => \App\Http\Middleware\RoleMiddleware::class,      
+        'is_admin'   => \App\Http\Middleware\IsAdmin::class,              
     ];
 }

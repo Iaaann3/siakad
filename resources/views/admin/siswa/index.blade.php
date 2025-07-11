@@ -209,7 +209,7 @@
                 <option value="">Pilih Kelas</option>
                 @foreach ($kelas as $k)
                     @if($k->id_jurusan)
-                        <option value="{{ $k->id }}" data-jurusan="{{ $k->jurusan->nama_jurusan ?? '' }}">{{ $k->nomor_kelas }} ({{ $k->jurusan->nama_jurusan ?? '-' }})</option>
+                        <option value="{{ $k->id }}" data-jurusan="{{ $k->jurusan->nama_jurusan ?? '' }}">{{ $k->nomor_kelas }} {{ $k->jurusan->nama_jurusan ?? '-' }}</option>
                     @endif
                 @endforeach
             </select>

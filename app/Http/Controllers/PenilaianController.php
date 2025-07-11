@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Penilaian;
 use App\Models\Semester;
 use App\Models\Siswa;
+use App\Models\Mapel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -11,14 +12,18 @@ use Illuminate\Support\Facades\Log;
 class PenilaianController extends Controller
 {
     public function index()
-    {
-        $penilaian = Penilaian::with('siswa', 'semester')->get();
-        return view('penilaian.index', compact('penilaian'));
-    }
+{
+    $penilaian = Penilaian::with(['siswa.kelas', 'mapel'])->get();
+    $siswaList = Siswa::with('kelas')->get();
+    $mapelList = Mapel::all();
+    $semesterList = Semester::all();
+
+    return view('guru.penilaian.index', compact('penilaian', 'siswaList', 'mapelList', 'semesterList'));
+}
 
     public function create()
     {
-        return view('penilaian.create', [
+        return view('guru.penilaian.create', [
             'siswa'    => Siswa::all(),
             'semester' => Semester::all(),
         ]);
@@ -48,7 +53,7 @@ class PenilaianController extends Controller
                 Penilaian::create($request->all());
             });
 
-            return redirect()->route('penilaian.index')->with('success', 'Nilai berhasil ditambahkan.');
+            return redirect()->route('guru.penilaian.index')->with('success', 'Nilai berhasil ditambahkan.');
         } catch (\Exception $e) {
             Log::error('Gagal menambahkan nilai: ' . $e->getMessage());
             return back()->with('error', $e->getMessage());
@@ -59,13 +64,13 @@ class PenilaianController extends Controller
     {
         try {
             $nilai = Penilaian::findOrFail($id);
-            return view('penilaian.edit', [
+            return view('guru.penilaian.edit', [
                 'nilai'    => $nilai,
                 'siswa'    => Siswa::all(),
                 'semester' => Semester::all(),
             ]);
         } catch (\Exception $e) {
-            return redirect()->route('penilaian.index')->with('error', 'Data penilaian tidak ditemukan.');
+            return redirect()->route('guru.penilaian.index')->with('error', 'Data penilaian tidak ditemukan.');
         }
     }
 
@@ -83,7 +88,7 @@ class PenilaianController extends Controller
                 ]);
             });
 
-            return redirect()->route('penilaian.index')->with('success', 'Nilai berhasil diperbarui.');
+            return redirect()->route('guru.penilaian.index')->with('success', 'Nilai berhasil diperbarui.');
         } catch (\Exception $e) {
             Log::error('Gagal update nilai: ' . $e->getMessage());
             return back()->with('error', 'Gagal memperbarui nilai.');
@@ -98,7 +103,7 @@ class PenilaianController extends Controller
                 $nilai->delete();
             });
 
-            return redirect()->route('penilaian.index')->with('success', 'Nilai berhasil dihapus.');
+            return redirect()->route('guru.penilaian.index')->with('success', 'Nilai berhasil dihapus.');
         } catch (\Exception $e) {
             Log::error('Gagal hapus nilai: ' . $e->getMessage());
             return back()->with('error', 'Terjadi kesalahan saat menghapus nilai.');
