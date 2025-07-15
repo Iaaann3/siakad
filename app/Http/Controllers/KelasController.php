@@ -2,7 +2,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guru;
-use App\Models\Jurusan;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,15 +12,15 @@ class KelasController extends Controller
     public function index()
     {
         $kelas   = Kelas::with(['jurusan', 'wali'])->orderBy('nomor_kelas')->get();
-        $jurusan = Jurusan::orderBy('nama_jurusan')->get();
         $guru    = Guru::whereDoesntHave('kelasWali')->orderBy('nama')->get();
-        return view('admin.kelas.index', compact('kelas', 'jurusan', 'guru'));
+        $jurusan = \App\Models\Jurusan::orderBy('nama_jurusan')->get();
+        return view('admin.kelas.index', compact('kelas', 'guru', 'jurusan'));
     }
 
     public function create()
     {
         $guru    = Guru::whereDoesntHave('kelasWali')->orderBy('nama')->get();
-        $jurusan = Jurusan::orderBy('nama_jurusan')->get();
+        $jurusan = \App\Models\Jurusan::orderBy('nama_jurusan')->get();
         return view('admin.kelas.create', [
             'guru'    => $guru,
             'jurusan' => $jurusan,
@@ -32,6 +31,7 @@ class KelasController extends Controller
     {
         $request->validate([
             'id_jurusan'  => 'required|exists:jurusan,id',
+            'tingkat'     => 'required|in:X,XI,XII',
             'nomor_kelas' => 'required|string|max:20',
             'kapasitas'   => 'required|integer|min:1',
             'wali_kelas'  => 'required|exists:guru,id',
@@ -46,6 +46,7 @@ class KelasController extends Controller
             DB::transaction(function () use ($request) {
                 Kelas::create([
                     'id_jurusan'  => $request->id_jurusan,
+                    'tingkat'     => $request->tingkat,
                     'nomor_kelas' => $request->nomor_kelas,
                     'kapasitas'   => $request->kapasitas,
                     'wali_kelas'  => $request->wali_kelas,
@@ -66,11 +67,9 @@ class KelasController extends Controller
             $guru  = Guru::whereDoesntHave('kelasWali')
                 ->orWhere('id', $kelas->wali_kelas)
                 ->orderBy('nama')->get();
-            $jurusan = Jurusan::orderBy('nama_jurusan')->get();
             return view('admin.kelas.edit', [
-                'kelas'   => $kelas,
-                'guru'    => $guru,
-                'jurusan' => $jurusan,
+                'kelas' => $kelas,
+                'guru'  => $guru,
             ]);
         } catch (\Exception $e) {
             return redirect()->route('admin.kelas.index')->with('error', 'Data kelas tidak ditemukan.');
@@ -81,6 +80,7 @@ class KelasController extends Controller
     {
         $request->validate([
             'id_jurusan'  => 'required|exists:jurusan,id',
+            'tingkat'     => 'required|in:X,XI,XII',
             'nomor_kelas' => 'required|string|max:20',
             'kapasitas'   => 'required|integer|min:1',
             'wali_kelas'  => 'required|exists:guru,id',
@@ -98,6 +98,7 @@ class KelasController extends Controller
                 $kelas = Kelas::findOrFail($id);
                 $kelas->update([
                     'id_jurusan'  => $request->id_jurusan,
+                    'tingkat'     => $request->tingkat,
                     'nomor_kelas' => $request->nomor_kelas,
                     'kapasitas'   => $request->kapasitas,
                     'wali_kelas'  => $request->wali_kelas,

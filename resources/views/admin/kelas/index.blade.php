@@ -38,8 +38,9 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Jurusan</th>
+                            <th>Tingkat</th>
                             <th>Nomor Kelas</th>
+                            <th>Jurusan</th>
                             <th>Kapasitas</th>
                             <th>Wali Kelas</th>
                             <th>Aksi</th>
@@ -49,8 +50,9 @@
                         @forelse ($kelas as $no => $item)
                         <tr>
                             <td>{{ $no + 1 }}</td>
-                            <td>{{ $item->jurusan->nama_jurusan ?? '-' }}</td>
+                            <td>{{ $item->tingkat ?? '-' }}</td>
                             <td>{{ $item->nomor_kelas }}</td>
+                            <td>{{ $item->jurusan->nama_jurusan ?? '-' }}</td>
                             <td>{{ $item->kapasitas ?? '-' }}</td>
                             <td>{{ $item->wali->nama ?? 'Wali Kelas Belum Ditambahkan' }}</td>
                             <td>
@@ -74,12 +76,12 @@
                                         @method('PUT')
                                         <div class="modal-body">
                                             <div class="mb-3">
-                                                <label class="form-label">Jurusan</label>
-                                                <select name="id_jurusan" class="form-control" required>
-                                                    <option value="">Pilih Jurusan</option>
-                                                    @foreach ($jurusan as $j)
-                                                        <option value="{{ $j->id }}" {{ (isset($item) && $item->id_jurusan == $j->id) ? 'selected' : '' }}>{{ $j->nama_jurusan }}</option>
-                                                    @endforeach
+                                                <label class="form-label">Tingkat Kelas</label>
+                                                <select name="tingkat" class="form-control" required>
+                                                    <option value="">Pilih Tingkat</option>
+                                                    <option value="X" {{ (isset($item) && $item->tingkat == 'X') ? 'selected' : '' }}>X</option>
+                                                    <option value="XI" {{ (isset($item) && $item->tingkat == 'XI') ? 'selected' : '' }}>XI</option>
+                                                    <option value="XII" {{ (isset($item) && $item->tingkat == 'XII') ? 'selected' : '' }}>XII</option>
                                                 </select>
                                             </div>
                                             <div class="mb-3">
@@ -99,6 +101,15 @@
                                                     @endforeach
                                                 </select>
                                             </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Jurusan</label>
+                                                <select name="id_jurusan" class="form-control" required>
+                                                    <option value="">Pilih Jurusan</option>
+                                                    @foreach ($jurusan as $j)
+                                                        <option value="{{ $j->id }}" {{ (isset($item) && $item->id_jurusan == $j->id) ? 'selected' : '' }}>{{ $j->nama_jurusan }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -112,7 +123,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted">Belum ada data kelas.</td>
+                            <td colspan="7" class="text-center text-muted">Belum ada data kelas.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -135,12 +146,12 @@
         @csrf
         <div class="modal-body">
           <div class="mb-3">
-            <label class="form-label">Jurusan</label>
-            <select name="id_jurusan" class="form-control" required>
-                <option value="">Pilih Jurusan</option>
-                @foreach ($jurusan as $j)
-                    <option value="{{ $j->id }}">{{ $j->nama_jurusan }}</option>
-                @endforeach
+            <label class="form-label">Tingkat Kelas</label>
+            <select name="tingkat" class="form-control" required>
+                <option value="">Pilih Tingkat</option>
+                <option value="X">X</option>
+                <option value="XI">XI</option>
+                <option value="XII">XII</option>
             </select>
           </div>
           <div class="mb-3">
@@ -157,6 +168,15 @@
                 <option value="">Pilih Guru</option>
                 @foreach ($guru as $g)
                     <option value="{{ $g->id }}">{{ $g->nama }}</option>
+                @endforeach
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Jurusan</label>
+            <select name="id_jurusan" class="form-control" required>
+                <option value="">Pilih Jurusan</option>
+                @foreach ($jurusan as $j)
+                    <option value="{{ $j->id }}">{{ $j->nama_jurusan }}</option>
                 @endforeach
             </select>
           </div>

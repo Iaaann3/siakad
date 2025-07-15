@@ -14,10 +14,17 @@ return new class extends Migration
         Schema::create('penilaian', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_siswa')->constrained('siswa')->onDelete('cascade');
+            $table->foreignId('id_kelas')->constrained('kelas')->onDelete('cascade');
             $table->foreignId('id_semester')->constrained('semester')->onDelete('cascade');
-            $table->enum('jenis_penilaian', ['harian', 'uts', 'uas']);
-            $table->decimal('nilai', 10, 2);
-            $table->text('keterangan')->nullable();
+            $table->foreignId('id_mapel')->constrained('mapel')->onDelete('cascade');
+            $table->integer('nh1')->default(0);
+            $table->integer('nh2')->default(0);
+            $table->integer('nh3')->default(0);
+            $table->integer('uts')->default(0);
+            $table->integer('uas')->default(0);
+            $table->decimal('rata_rata', 5, 2)->default(0);
+            $table->string('rapot')->default('0');
+
             $table->timestamps();
         });
     }

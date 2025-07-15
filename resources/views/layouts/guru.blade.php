@@ -57,9 +57,9 @@
           <!-- Footer -->
           <div class="py-6 px-6 text-center">
             <p class="mb-0 fs-4">
-              Design and Developed by 
-              <a href="#" class="pe-1 text-primary text-decoration-underline">Wrappixel.com</a> 
-              Distributed by 
+              Design and Developed by
+              <a href="#" class="pe-1 text-primary text-decoration-underline">Wrappixel.com</a>
+              Distributed by
               <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
             </p>
           </div>
@@ -82,7 +82,9 @@
   <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
 
   <!-- Script Tambahan Per Halaman -->
+
   @yield('scripts')
+  @stack('scripts')
 
 </body>
 

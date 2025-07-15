@@ -48,11 +48,12 @@
                             <th>No</th>
                             <th>NIS</th>
                             <th>Nama</th>
+                            <th>Tingkat</th>
                             <th>Kelas</th>
+                            <th>Jurusan</th>
                             <th>Jenis Kelamin</th>
                             <th>No Telepon</th>
                             <th>Alamat</th>
-                            <th>Jurusan</th>
                             <th>Foto</th>
                             <th>Aksi</th>
                         </tr>
@@ -63,11 +64,12 @@
                             <td>{{ $no + 1 }}</td>
                             <td>{{ $item->nis }}</td>
                             <td>{{ $item->nama }}</td>
+                            <td>{{ $item->kelas->tingkat ?? '-' }}</td>
                             <td>{{ $item->kelas->nomor_kelas ?? '-' }}</td>
+                            <td>{{ $item->kelas->jurusan->nama_jurusan ?? '-' }}</td>
                             <td>{{ $item->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
                             <td>{{ $item->no_telepon }}</td>
                             <td>{{ $item->alamat }}</td>
-                            <td>{{ $item->jurusan->nama_jurusan ?? '-' }}</td>
                             <td>
                                 @if($item->foto)
                                     <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto Siswa" width="40" class="rounded-circle">
@@ -93,13 +95,15 @@
                                       <form action="{{ route('admin.siswa.update', $item->id) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         @method('PUT')
-                                        <div class="modal-body">
+                                       <div class="modal-body">
                                             <div class="mb-3">
                                                 <label class="form-label">User</label>
                                                 <select name="id_users" class="form-control" required>
                                                     <option value="">Pilih User</option>
                                                     @foreach ($users as $u)
-                                                        <option value="{{ $u->id }}" {{ $item->id_users == $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
+                                                        <option value="{{ $u->id }}" {{ $item->id_users == $u->id ? 'selected' : '' }}>
+                                                            {{ $u->email }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -108,9 +112,9 @@
                                                 <select name="id_kelas" class="form-control" required>
                                                     <option value="">Pilih Kelas</option>
                                                     @foreach ($kelas as $k)
-                                                        @if($k->id_jurusan)
-                                                            <option value="{{ $k->id }}" {{ $item->id_kelas == $k->id ? 'selected' : '' }} data-jurusan="{{ $k->jurusan->nama_jurusan ?? '' }}">{{ $k->nomor_kelas }} ({{ $k->jurusan->nama_jurusan ?? '-' }})</option>
-                                                        @endif
+                                                        <option value="{{ $k->id }}" {{ $item->id_kelas == $k->id ? 'selected' : '' }}>
+                                                            {{ $k->tingkat }} {{ $k->nomor_kelas }} ({{ $k->jurusan->nama_jurusan ?? '-' }})
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -124,7 +128,7 @@
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label">Alamat</label>
-                                                <textarea name="alamat" class="form-control">{{ $item->alamat }}</textarea>
+                        <option value="{{ $k->id }}" data-tingkat="{{ $k->tingkat }}" data-jurusan="{{ $k->jurusan->nama_jurusan ?? '' }}">{{ $k->tingkat }} {{ $k->nomor_kelas }} ({{ $k->jurusan->nama_jurusan ?? '-' }})</option>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label">Jenis Kelamin</label>
@@ -158,6 +162,10 @@
                                                         @endif
                                                     @endforeach
                                                 </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Tingkat</label>
+                                                <input type="text" class="form-control" value="{{ $item->kelas->tingkat ?? '-' }}" readonly>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -199,7 +207,7 @@
             <select name="id_users" class="form-control" required>
                 <option value="">Pilih User</option>
                 @foreach ($users as $u)
-                    <option value="{{ $u->id }}">{{ $u->name }}</option>
+                    <option value="{{ $u->id }}">{{ $u->email }}</option>
                 @endforeach
             </select>
           </div>
@@ -209,7 +217,7 @@
                 <option value="">Pilih Kelas</option>
                 @foreach ($kelas as $k)
                     @if($k->id_jurusan)
-                        <option value="{{ $k->id }}" data-jurusan="{{ $k->jurusan->nama_jurusan ?? '' }}">{{ $k->nomor_kelas }} {{ $k->jurusan->nama_jurusan ?? '-' }}</option>
+                        <option value="{{ $k->id }}" data-jurusan="{{ $k->jurusan->nama_jurusan ?? '' }}">{{ $k->tingkat ?? '-' }}  {{ $k->jurusan->nama_jurusan ?? '-' }} {{ $k->nomor_kelas }}</option>
                     @endif
                 @endforeach
             </select>
@@ -273,6 +281,17 @@
         const tableSiswa = document.querySelector('#tableSiswa');
         if (tableSiswa) {
             new simpleDatatables.DataTable(tableSiswa);
+        }
+
+        // Untuk modal tambah siswa: update field tingkat saat kelas dipilih
+        const tambahKelasSelect = document.getElementById('tambah-id-kelas');
+        const tambahTingkatInput = document.getElementById('tambah-tingkat');
+        if (tambahKelasSelect && tambahTingkatInput) {
+            tambahKelasSelect.addEventListener('change', function() {
+                const selected = tambahKelasSelect.options[tambahKelasSelect.selectedIndex];
+                const tingkat = selected.getAttribute('data-tingkat') || '-';
+                tambahTingkatInput.value = tingkat;
+            });
         }
     });
 </script>

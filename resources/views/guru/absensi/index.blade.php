@@ -1,126 +1,118 @@
 @extends('layouts.guru')
+
 @section('content')
 <div class="container-fluid p-0">
-    <div class="card mt-2">
-        <div class="card-body">
-            <h5 class="card-title fw-semibold mb-4">Daftar Absensi Siswa</h5>
-            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalTambahAbsensi">
-                + Tambah Absensi
-            </button>
-            <table class="table mt-2">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama Siswa</th>
-                        <th>Kelas</th>
-                        <th>Jadwal</th>
-                        <th>Tanggal</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($absensi as $no => $item)
-                    <tr>
-                        <td>{{ $no + 1 }}</td>
-                        <td>{{ $item->siswa->nama ?? '-' }}</td>
-                        <td>{{ $item->siswa->kelas->nomor_kelas ?? '-' }}</td>
-                        <td>{{ $item->jadwal->mapel->nama_mapel ?? '-' }} ({{ $item->jadwal->hari ?? '-' }})</td>
-                        <td>{{ $item->tanggal }}</td>
-                        <td>{{ ucfirst($item->status) }}</td>
-                        <td>
-                            <a href="#" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditAbsensi{{ $item->id }}">Edit</a>
-                        </td>
-                    </tr>
-                    <!-- Modal Edit Absensi -->
-                    <div class="modal fade" id="modalEditAbsensi{{ $item->id }}" tabindex="-1" aria-labelledby="modalEditLabel{{ $item->id }}" aria-hidden="true">
-                      <div class="modal-dialog">
-                        <form action="{{ route('guru.absensi.update', $item->id) }}" method="POST">
-                          @csrf
-                          @method('PUT')
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="modalEditLabel{{ $item->id }}">Edit Absensi</h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                              <div class="mb-3">
-                                <label class="form-label">Status</label>
-                                <select name="status" class="form-select" required>
-                                  <option value="hadir" {{ $item->status == 'hadir' ? 'selected' : '' }}>Hadir</option>
-                                  <option value="izin" {{ $item->status == 'izin' ? 'selected' : '' }}>Izin</option>
-                                  <option value="sakit" {{ $item->status == 'sakit' ? 'selected' : '' }}>Sakit</option>
-                                  <option value="alpha" {{ $item->status == 'alpha' ? 'selected' : '' }}>Alpha</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                              <button type="submit" class="btn btn-primary">Update</button>
-                            </div>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="text-center text-muted">Belum ada data absensi.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+    <h4 class="fw-semibold mt-2 mb-3">Absensi Siswa</h4>
+
+    <form method="GET">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <label for="jadwal">Pilih Mapel / Jadwal</label>
+                <select name="jadwal" id="jadwal" class="form-select" onchange="this.form.submit()">
+                    <option value="">Pilih Jadwal</option>
+                    @foreach($jadwalList as $j)
+                        <option value="{{ $j->id }}" {{ request('jadwal') == $j->id ? 'selected' : '' }}>
+                            {{ $j->mapel->nama_mapel }} - Kelas {{ $j->kelas->nomor_kelas }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
         </div>
-    </div>
-</div>
-<!-- Modal Tambah Absensi -->
-<div class="modal fade" id="modalTambahAbsensi" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form action="{{ route('guru.absensi.store') }}" method="POST">
-      @csrf
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalTambahLabel">Tambah Absensi</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">Siswa</label>
-            <select name="id_siswa" class="form-select" required>
-              <option value=""> Pilih Siswa </option>
-              @foreach($siswaList as $siswa)
-              <option value="{{ $siswa->id }}">{{ $siswa->nama }} (Kelas {{ $siswa->kelas->nomor_kelas }})</option>
-              @endforeach
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Jadwal</label>
-            <select name="id_jadwal" class="form-select" required>
-              <option value=""> Pilih Jadwal </option>
-              @foreach($jadwalList as $jadwal)
-              <option value="{{ $jadwal->id }}">{{ $jadwal->mapel->nama_mapel ?? '-' }} ({{ $jadwal->hari ?? '-' }})</option>
-              @endforeach
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Tanggal</label>
-            <input type="date" name="tanggal" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Status</label>
-            <select name="status" class="form-select" required>
-              <option value="hadir">Hadir</option>
-              <option value="izin">Izin</option>
-              <option value="sakit">Sakit</option>
-              <option value="alpha">Alpha</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-primary">Simpan</button>
-        </div>
-      </div>
     </form>
-  </div>
+
+    @if($selectedJadwal && $siswaList->count())
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Nama Siswa</th>
+                    @for($p=1; $p<=20; $p++)
+                        <th>Pertemuan {{ $p }}</th>
+                    @endfor
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($siswaList as $siswa)
+                <tr>
+                    <td>{{ $siswa->nama }}</td>
+                    @for($p=1; $p<=20; $p++)
+                        @php
+                            $absen = $absensi[$siswa->id][$p] ?? null;
+                            $status = $absen ? ucfirst($absen->status) : '-';
+                            $color = match(strtolower($status)) {
+                                'hadir' => 'success',
+                                'sakit' => 'warning',
+                                'izin'  => 'info',
+                                'alfa'  => 'danger',
+                                default => 'secondary'
+                            };
+                        @endphp
+                        <td>
+                            <span class="badge bg-{{ $color }} absen-editable"
+                                data-jadwal="{{ $selectedJadwal->id }}"
+                                data-siswa="{{ $siswa->id }}"
+                                data-pertemuan_ke="{{ $p }}" 
+                                style="cursor:pointer;">
+                                {{ $status }}
+                            </span>
+                        </td>
+                    @endfor
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @endif
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.absen-editable').forEach(function(el) {
+        el.addEventListener('click', function() {
+            let statusList = ['hadir', 'sakit', 'izin', 'alpha'];
+            let currentDisplay = el.textContent.trim();
+            let currentInternal = currentDisplay.toLowerCase();
+
+            let nextDisplay = prompt('Status Kehadiran (Hadir/Sakit/Izin/Alfa):', currentDisplay);
+            if (nextDisplay) {
+                let nextInternal = nextDisplay.toLowerCase();
+
+                if (statusList.includes(nextInternal)) {
+                    fetch('{{ route("guru.absensi.ajaxUpdate") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            jadwal_id: el.dataset.jadwal,
+                            siswa_id: el.dataset.siswa,
+                            pertemuan_ke: el.dataset.pertemuan_ke, 
+                            status: nextInternal
+                        })
+                    }).then(res => res.json()).then(data => {
+                        if(data.success) {
+                            el.textContent = nextDisplay;
+                            let colorMap = {
+                                'hadir': 'success',
+                                'sakit': 'warning',
+                                'izin': 'info',
+                                'alpha': 'danger'
+                            };
+                            el.className = 'badge bg-' + (colorMap[nextInternal] || 'secondary') + ' absen-editable';
+                        } else {
+                            alert('Gagal update absensi! ' + (data.message || ''));
+                        }
+                    }).catch(error => {
+                        console.error('Error during fetch:', error);
+                        alert('Terjadi kesalahan jaringan atau server tidak merespons.');
+                    });
+                } else {
+                    alert('Status tidak valid. Harap masukkan Hadir, Sakit, Izin, atau Alpha.');
+                }
+            }
+        });
+    });
+});
+</script>
 @endsection

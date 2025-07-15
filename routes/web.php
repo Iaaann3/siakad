@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\AbsensiSiswaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
-use App\Http\Controllers\JadwalGuruController;
 use App\Http\Controllers\GuruDashboardController;
 use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\JadwalSiswaController;
+use App\Http\Controllers\JadwalGuruController;
 use App\Http\Controllers\JenisKeuanganController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\KelasController;
@@ -68,12 +70,16 @@ Route::group([
 Route::group([
     'prefix'     => 'guru',
     'as'         => 'guru.',
-    'middleware' => ['auth'],
+    'middleware' => ['auth', 'role:guru'],
 ], function () {
     Route::get('/', [GuruDashboardController::class, 'index'])->name('dashboard');
     Route::resource('mapel', MapelController::class);
     Route::resource('penilaian', PenilaianController::class);
-    Route::resource('absensi', AbsensiController::class);
+    Route::post('/penilaian/update-inline/{id}', [PenilaianController::class, 'updateInline'])->name('penilaian.updateInline');
+
+    Route::post('/absensi/ajax-update', [AbsensiController::class, 'ajaxUpdate'])->name('absensi.ajaxUpdate');
+
+    Route::resource('absensi', AbsensiController::class); // Ini harus di bawah route spesifik di atas
     Route::resource('jadwal', JadwalGuruController::class);
 });
 
@@ -83,11 +89,14 @@ Route::group([
 Route::group([
     'prefix'     => 'siswa',
     'as'         => 'siswa.',
-    'middleware' => ['auth'],
+    'middleware' => ['auth', 'role:siswa'],
 ], function () {
-    Route::get('/', fn() => view('siswa.dashboard'))->name('dashboard');
+    Route::get('/', [App\Http\Controllers\SiswaDashboardController::class, 'index'])->name('dashboard');
+    Route::get('penilaian', [PenilaianController::class, 'siswaIndex'])->name('penilaian.index');
+    Route::get('penilaian-siswa/detail/{mapel}', [PenilaianController::class, 'siswaShowDetail'])->name('penilaian.detail');
     Route::resource('mapel', MapelController::class);
-    Route::resource('absensi', AbsensiController::class);
+    Route::get('absensi', [AbsensiSiswaController::class, 'index'])->name('absensi.index');
     Route::resource('keuangan', KeuanganController::class);
     Route::resource('kelas', KelasController::class);
+    Route::resource('jadwal', JadwalSiswaController::class);
 });

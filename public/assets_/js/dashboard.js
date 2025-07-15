@@ -79,11 +79,11 @@ $(function () {
     },
   };
 
-  var chart_column_basic = new ApexCharts(
-    document.querySelector("#sales-overview"),
-    options_sales_overview
-  );
+ var target = document.querySelector("#sales-overview");
+if (target) {
+  var chart_column_basic = new ApexCharts(target, options_sales_overview);
   chart_column_basic.render();
+}
 
 
 })

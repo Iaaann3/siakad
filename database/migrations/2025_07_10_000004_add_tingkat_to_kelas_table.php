@@ -8,14 +8,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('kelas', function (Blueprint $table) {
-            $table->string('tingkat', 10)->nullable()->after('id_jurusan');
+            if (! Schema::hasColumn('kelas', 'tingkat')) {
+                $table->string('tingkat', 10)->nullable()->after('id');
+            }
+            // Hapus penambahan id_jurusan di migration ini, cukup satu migration saja yang handle id_jurusan
         });
     }
 
     public function down(): void
     {
         Schema::table('kelas', function (Blueprint $table) {
-            $table->dropColumn('tingkat');
+            if (Schema::hasColumn('kelas', 'tingkat')) {
+                $table->dropColumn('tingkat');
+            }
         });
     }
 };

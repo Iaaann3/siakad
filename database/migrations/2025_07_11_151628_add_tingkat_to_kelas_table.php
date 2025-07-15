@@ -7,24 +7,22 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     *
      */
     public function up(): void
     {
         Schema::table('kelas', function (Blueprint $table) {
-            $table->dropForeign(['id_jurusan']);
-            $table->dropColumn('id_jurusan');
+            $table->string('tingkat', 10)->nullable()->after('id'); // Atau after 'nomor_kelas' jika kamu ingin posisi berbeda
         });
     }
 
     /**
-     * Reverse the migrations.
+     *
      */
     public function down(): void
     {
         Schema::table('kelas', function (Blueprint $table) {
-            $table->unsignedBigInteger('id_jurusan')->nullable();
-            $table->foreign('id_jurusan')->references('id')->on('jurusan');
+            $table->dropColumn('tingkat');
         });
     }
 };
